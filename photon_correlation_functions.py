@@ -19,4 +19,4 @@ def fl_signal(beta, laser_detun, Omega, decay_rate):
     numer = 2 * j0(beta) * j1(beta) * np.absolute(np.conj(A) * A_plus - A * np.conj(A_minus))
     denom = j0(beta) ** 2 * A * np.conj(A) + j1(beta) ** 2 * (A_plus * np.conj(A_plus) + A_minus * np.conj(A_minus))
 
-    return numer / denom
+    return (numer / denom).real
