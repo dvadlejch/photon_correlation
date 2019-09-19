@@ -12,6 +12,8 @@ def get_A(decay_rate, detun):
 
 
 def fl_signal(beta, laser_detun, Omega, decay_rate):
+    # function calculates deltaS/S0 photon-correlation signal
+    # input: beta, laser detuning, RF drive freq, decay rate
     A_minus = get_A(decay_rate, laser_detun - Omega)
     A_plus = get_A(decay_rate, laser_detun + Omega)
     A = get_A(decay_rate, laser_detun)
@@ -20,3 +22,11 @@ def fl_signal(beta, laser_detun, Omega, decay_rate):
     denom = j0(beta) ** 2 * A * np.conj(A) + j1(beta) ** 2 * (A_plus * np.conj(A_plus) + A_minus * np.conj(A_minus))
 
     return (numer / denom).real
+
+def signal_phase(laser_detun, Omega, decay_rate):
+
+    A_minus = get_A(decay_rate, laser_detun - Omega)
+    A_plus = get_A(decay_rate, laser_detun + Omega)
+    A = get_A(decay_rate, laser_detun)
+
+    return np.angle(np.conj(A) * A_plus - A * np.conj(A_minus))
