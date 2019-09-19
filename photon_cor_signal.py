@@ -15,7 +15,7 @@ Phi = 1  # phase of RF drive
 N_cyc = 10  # measurement is running through N_cyc cycles of RF drive
 measure_time = N_cyc * RF_per
 
-N = 100000  # number of measurements
+N = 200000  # number of measurements
 
 ## fluorescence signal
 
@@ -41,7 +41,7 @@ for i in range(N):
     #print(RF_cross[ind[0][0]])
 
 ## plot of histogram
-#plt.hist(np.array(t_det), bins=int(N/500)) # time histogram
+plt.hist(np.array(t_det)/RF_per, bins=int(N/500)) # time histogram
 plt.hist(tau/RF_per, bins=int(N/500))
 plt.show()
 
