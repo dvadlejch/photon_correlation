@@ -16,9 +16,9 @@ laser_detun = np.linspace(-3*decay_rate,0 , N)
 phot_signal = fl_signal(beta, laser_detun, Omega, decay_rate)
 signal_angle = signal_phase(laser_detun, Omega, decay_rate)
 
-plt.plot(laser_detun/Omega, phot_signal)
+plt.plot(laser_detun/decay_rate, phot_signal)
 plt.show()
-plt.plot(laser_detun/Omega, -signal_angle)
+plt.plot(laser_detun/decay_rate, -signal_angle)
 plt.show()
 
 ## A(omega)/A(omega_0)
