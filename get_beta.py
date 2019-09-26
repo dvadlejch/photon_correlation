@@ -6,11 +6,12 @@ import numpy as np
 from scipy.optimize import fsolve
 from photon_correlation_functions import fl_signal
 
+
 ## parameters of the experiment
-Omega = 2 * np.pi * 30.141e6  # RF drive freq
+Omega = 2 * np.pi * 30.151e6  # RF drive freq
 decay_rate = 132e6  # units 2*pi * decay freq
 #laser_detun = -1 / 2 * decay_rate  # laser detuning
-laser_detun = -1/2 * Omega # laser detuning
+laser_detun = -1/2 * decay_rate # laser detuning
 ## values from experiment
 norm_mod_amp = 0.025  # normalized modulation amplitude determined by experiment
 
