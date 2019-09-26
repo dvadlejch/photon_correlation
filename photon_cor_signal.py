@@ -4,18 +4,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # parameters
-S_0 = 100  # photon/s
-Delta_S = 10  # photon/s
+S_0 = 1400  # photon/s
+Delta_S = 1000  # photon/s
 
-Omega = 2 * np.pi * 30.141e6  # RF drive freq
+Omega = 2 * np.pi * 30.151e6  # RF drive freq
 RF_per = 2*np.pi/Omega
-Phi = 1  # phase of RF drive
+Phi = 0  # phase of RF drive
 
 ## photon-correlation measurement params
-N_cyc = 10  # measurement is running through N_cyc cycles of RF drive
+N_cyc = 200  # measurement is running through N_cyc cycles of RF drive
 measure_time = N_cyc * RF_per
 
-N = 200000  # number of measurements
+N = 60000  # number of measurements
 
 ## fluorescence signal
 

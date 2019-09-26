@@ -13,7 +13,7 @@ decay_rate = 132e6  # units 2*pi * decay freq
 #laser_detun = -1 / 2 * decay_rate  # laser detuning
 laser_detun = -1/2 * decay_rate # laser detuning
 ## values from experiment
-norm_mod_amp = 0.025  # normalized modulation amplitude determined by experiment
+norm_mod_amp = 0.71  # normalized modulation amplitude determined by experiment
 
 
 ## solution
