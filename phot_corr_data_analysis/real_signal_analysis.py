@@ -49,21 +49,21 @@ for k in range(N_of_data_sets):
 ## fit of the histogram
 # S(t) = S_0 + Delta S * cos(Omega*t - phi)  # Keller2015
 
-def fit_resid(x, laser_detun, Omega, decay_rate, S, time_step):
-    # x = [beta, phi, phi_prime, scale]
+def fit_resid(x, Omega, S, time_step):
+    # x = [S_0, Delta S, phi, Delta_S_2, phi_prime]
     len_S = len(S)
-    S_fit = fl_signal_second_order(x[0], laser_detun, Omega, decay_rate, time_step*np.arange(0, len_S), x[1], x[2], x[3])
+    S_fit = x[0] + x[1] * np.cos(Omega * time_step * np.arange(0, len_S) + x[2]) + x[3] * np.cos(2*Omega * time_step * np.arange(0, len_S) - x[4])
     return S - S_fit
 
 norm_mod_amp = np.zeros(N_of_data_sets)
 for k in range(N_of_data_sets):
     # fit = least_squares(fit_resid, [320000, 80000, 0], args=(
     # Omega, cumulative_fluorescence[:,k], time_step), bounds=([0, 0, 0], [np.inf, np.inf, 2*np.pi]) )  # fit.x[0] = S_0, fit.x[1] = Delta S, fit.x[2] = phi
-    fit = least_squares(fit_resid, [10, 0, 0, 1e22], args=(laser_detun, Omega,decay_rate,  cumulative_fluorescence[:, k], time_step) )  # fit.x[0] = S_0, fit.x[1] = Delta S, fit.x[2] = phi
+    fit = least_squares(fit_resid, [300000, 30000, 0, 10000, 0], args=(Omega, cumulative_fluorescence[:, k], time_step) )  # fit.x[0] = S_0, fit.x[1] = Delta S, fit.x[2] = phi
     print(fit)
-    norm_mod_amp[k] = fit.x[0]  # Delta S/S_0
+    norm_mod_amp[k] = np.abs(fit.x[1] / fit.x[0]) # Delta S/S_0
 
-    S_fit = fl_signal_second_order(fit.x[0], laser_detun, Omega, decay_rate, time_step*np.arange(0, N_steps_per_rf_period), fit.x[1], fit.x[2], fit.x[3])
+    S_fit = fit.x[0] + fit.x[1] * np.cos(Omega * time_step * np.arange(0, N_steps_per_rf_period) - fit.x[2]) + fit.x[3] * np.cos(2*Omega * time_step * np.arange(0, N_steps_per_rf_period) - fit.x[4])
     plt.figure(k)
     plt.plot(S_fit)
     plt.plot(cumulative_fluorescence[:,k], '.')
@@ -93,9 +93,12 @@ delta_U = matlab_plot_axes['x']
 
 # plt.plot(delta_U, E_rf, '.',delta_U, matlab_plot_axes['y'],'.')
 # plt.show()
-plt.figure(1)
-plt.plot(delta_U, E_rf, '.')
-#
-plt.figure(2)
-plt.plot(delta_U, matlab_plot_axes['y'], '.')
+# plt.figure(1)
+# plt.plot(delta_U, E_rf, '.')
+# #
+# plt.figure(2)
+# plt.plot(delta_U, matlab_plot_axes['y'], '.')
+# plt.show()
+plt.figure()
+plt.plot(beta, '.')
 plt.show()
