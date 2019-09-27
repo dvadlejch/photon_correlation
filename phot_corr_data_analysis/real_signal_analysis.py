@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from scipy.optimize import least_squares
 from photon_correlation_functions import get_beta
 ## data import
-data_fluorescence = loadmat('micromotion_99_X_Y_110_bfiel2.mat')['namerene_hodnoty']
+data_fluorescence = loadmat('micromotion_60_900_900_200.mat')['namerene_hodnoty']
 len_data = len(data_fluorescence) # number of fluorescence data in each measurement of micromotion
 N_of_data_sets = data_fluorescence.shape[1] # number of measurements of micromotion
 ## measurement parameters
@@ -62,11 +62,11 @@ for k in range(N_of_data_sets):
         Omega, cumulative_fluorescence[:, k], time_step) )  # fit.x[0] = S_0, fit.x[1] = Delta S, fit.x[2] = phi
     norm_mod_amp[k] = np.abs(fit.x[1] / fit.x[0])  # Delta S/S_0
 
-    # S_fit = fit.x[0] + fit.x[1] * np.cos(Omega * time_step * np.arange(0, len(cumulative_fluorescence)) - fit.x[2])
-    # plt.figure(k)
-    # plt.plot(S_fit)
-    # plt.plot(cumulative_fluorescence[:,k], '.')
-    # plt.show()
+    S_fit = fit.x[0] + fit.x[1] * np.cos(Omega * time_step * np.arange(0, len(cumulative_fluorescence)) - fit.x[2])
+    plt.figure(k)
+    plt.plot(S_fit)
+    plt.plot(cumulative_fluorescence[:,k], '.')
+    plt.show()
 
 # -----------plot of the fit
 # S_fit = fit.x[0] + fit.x[1] * np.cos(Omega * time_step * np.arange(0, len(cumulative_fluorescence[:,1])) - fit.x[2])
@@ -90,11 +90,11 @@ E_rf = m*Omega**2 / (k_vec*e) * beta
 matlab_plot_axes = loadmat('x_axis.mat')
 delta_U = matlab_plot_axes['x']
 
-plt.plot(delta_U, E_rf, '.',delta_U, matlab_plot_axes['y'],'.')
-plt.show()
-# plt.figure(1)
-# plt.plot(delta_U, E_rf, '.')
-#
-# plt.figure(2)
-# plt.plot(delta_U, matlab_plot_axes['y'], '.')
+# plt.plot(delta_U, E_rf, '.',delta_U, matlab_plot_axes['y'],'.')
 # plt.show()
+plt.figure(1)
+plt.plot(delta_U, E_rf, '.')
+#
+plt.figure(2)
+plt.plot(delta_U, matlab_plot_axes['y'], '.')
+plt.show()
