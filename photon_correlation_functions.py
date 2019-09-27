@@ -59,3 +59,17 @@ def fl_signal_second_order(beta, laser_detun, Omega, decay_rate, time, phi, phi_
     Delta_S_2 = 2*j1(beta)**2 * np.absolute(A_plus*np.conj(A_minus))
 
     return scale*(S_0 + Delta_S*np.cos(Omega*time + phi) + Delta_S_2*np.cos(2*Omega*time + phi_prime) )
+
+## defining fluorescence func
+def fl_signal_second_order_mean(beta, laser_detun, Omega, decay_rate, time, phi, phi_prime, scale):
+    # function calculates photon-correlation signal
+    # input: beta, laser detuning, RF drive freq, decay rate, time vector, phase of omega term, phase of 2*omega term
+    A_minus = get_A(decay_rate, laser_detun - Omega)
+    A_plus = get_A(decay_rate, laser_detun + Omega)
+    A = get_A(decay_rate, laser_detun)
+
+    Delta_S = 2 * j0(beta) * j1(beta) * np.absolute(np.conj(A) * A_plus - A * np.conj(A_minus))
+    #S_0 = j0(beta) ** 2 * np.absolute(A) ** 2 + j1(beta) ** 2 * (np.absolute(A_plus) ** 2 + np.absolute(A_minus) ** 2)
+    Delta_S_2 = 2*j1(beta)**2 * np.absolute(A_plus*np.conj(A_minus))
+
+    return scale*( Delta_S*np.cos(Omega*time + phi) + Delta_S_2*np.cos(2*Omega*time + phi_prime) )
