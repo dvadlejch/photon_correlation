@@ -1,4 +1,4 @@
-# 26.9.2019
+# 27.9.2019
 # calculation of the modulation index beta for a real measured data
 ## import
 # from mat4py import loadmat

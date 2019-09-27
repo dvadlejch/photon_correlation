@@ -37,8 +37,8 @@ for k in range(N_of_data_sets):
         for j in range(N_steps_per_rf_period):
             cumulative_fluorescence[j, k] += data_fluorescence[j + i * N_steps_per_rf_period, k]
 
-    S_0[k] = cumulative_fluorescence[:, k].mean()
-    cumulative_fluorescence[:, k] = cumulative_fluorescence[:, k] - S_0[k]
+   # S_0[k] = cumulative_fluorescence[:, k].mean()
+    #cumulative_fluorescence[:, k] = cumulative_fluorescence[:, k] - S_0[k]
 
 
 ## defining fluorescence func
@@ -50,10 +50,10 @@ def fl_signal_second_order_mean(beta, laser_detun, Omega, decay_rate, time, phi,
     A = get_A(decay_rate, laser_detun)
 
     Delta_S = 2 * j0(beta) * j1(beta) * np.absolute(np.conj(A) * A_plus - A * np.conj(A_minus))
-    # S_0 = j0(beta) ** 2 * np.absolute(A) ** 2 + j1(beta) ** 2 * (np.absolute(A_plus) ** 2 + np.absolute(A_minus) ** 2)
+    S_0 = j0(beta) ** 2 * np.absolute(A) ** 2 + j1(beta) ** 2 * (np.absolute(A_plus) ** 2 + np.absolute(A_minus) ** 2)
     Delta_S_2 = 2 * j1(beta) ** 2 * np.absolute(A_plus * np.conj(A_minus))
 
-    return scale * (Delta_S * np.cos(Omega * time + phi) + Delta_S_2 * np.cos(2 * Omega * time + phi_prime))
+    return scale * (S_0 + Delta_S * np.cos(Omega * time + phi) + Delta_S_2 * np.cos(2 * Omega * time + phi_prime))
 
 
 ## fit of the histogram
@@ -82,7 +82,7 @@ for k in range(N_of_data_sets):
     scale_precalculated = 1.3e17*(cumulative_fluorescence[:,k].max() - cumulative_fluorescence[:,k].min())
     fit = least_squares(fit_resid, [2, 0, 0, scale_precalculated],
                         args=(laser_detun, Omega, decay_rate, cumulative_fluorescence[:, k], time_step), bounds=(
-        [0, 0, 0, 0.5e22], [5, 2 * np.pi, 2 * np.pi, 1e24]))  # fit.x[0] = S_0, fit.x[1] = Delta S, fit.x[2] = phi
+        [1, 0, 0, 0.5e22], [5, 2 * np.pi, 2 * np.pi, 1e24]))  # fit.x[0] = S_0, fit.x[1] = Delta S, fit.x[2] = phi
     optim[k] = fit.optimality
     beta[k] = fit.x[0]  # Delta S/S_0
     if optim[k] > 1000:
@@ -114,13 +114,12 @@ delta_U = matlab_plot_axes['x']
 
 # plt.plot(delta_U, E_rf, '.',delta_U, matlab_plot_axes['y'],'.')
 # plt.show()
-plt.figure()
-plt.plot(delta_U, E_rf, '.')
-#
-plt.figure()
-plt.plot(delta_U, matlab_plot_axes['y'], '.')
-plt.show()
-
-# plt.figure()
-# plt.plot(beta, '.')
+# plt.figure(1)
+# plt.plot(delta_U, E_rf, '.')
+# #
+# plt.figure(2)
+# plt.plot(delta_U, matlab_plot_axes['y'], '.')
 # plt.show()
+plt.figure()
+plt.plot(beta, '.')
+plt.show()
