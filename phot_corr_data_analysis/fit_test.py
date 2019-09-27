@@ -17,7 +17,7 @@ time_step = 128e-12  # time step in seconds
 N_steps_per_rf_period = int(T / time_step)
 t = time_step * np.arange(0, N_steps_per_rf_period)
 
-S = fl_signal_second_order(0.2, laser_detun, Omega, decay_rate, t, -3.41e-2, 6.26e-1, 1e22)
+S = fl_signal_second_order(2.5, laser_detun, Omega, decay_rate, t, -3.41e-2, 6.26e-1, 1)
 
 plt.plot(t, S)
 plt.show()

@@ -77,12 +77,16 @@ optim = np.zeros(N_of_data_sets)
 for k in range(N_of_data_sets):
     # fit = least_squares(fit_resid, [320000, 80000, 0], args=(
     # Omega, cumulative_fluorescence[:,k], time_step), bounds=([0, 0, 0], [np.inf, np.inf, 2*np.pi]) )  # fit.x[0] = S_0, fit.x[1] = Delta S, fit.x[2] = phi
-    fit = least_squares(fit_resid, [2, 0, 0, 1e24],
+
+    # now I want to play with the scale parameter  for scale=1 fluorescence is approx 1e-17
+    scale_precalculated = 1.3e17*(cumulative_fluorescence[:,k].max() - cumulative_fluorescence[:,k].min())
+    fit = least_squares(fit_resid, [2, 0, 0, scale_precalculated],
                         args=(laser_detun, Omega, decay_rate, cumulative_fluorescence[:, k], time_step), bounds=(
-        [0, 0, 0, 5e21], [5, 2 * np.pi, 2 * np.pi, 1e24]))  # fit.x[0] = S_0, fit.x[1] = Delta S, fit.x[2] = phi
+        [0, 0, 0, 0.5e22], [5, 2 * np.pi, 2 * np.pi, 1e24]))  # fit.x[0] = S_0, fit.x[1] = Delta S, fit.x[2] = phi
     optim[k] = fit.optimality
     beta[k] = fit.x[0]  # Delta S/S_0
-
+    if optim[k] > 1000:
+        print(fit)
     S_fit = fl_signal_second_order_mean(fit.x[0], laser_detun, Omega, decay_rate,
                                         time_step * np.arange(0, N_steps_per_rf_period), fit.x[1], fit.x[2], fit.x[3])
     plt.figure(k)
