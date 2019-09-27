@@ -73,3 +73,24 @@ def fl_signal_second_order_mean(beta, laser_detun, Omega, decay_rate, time, phi,
     Delta_S_2 = 2*j1(beta)**2 * np.absolute(A_plus*np.conj(A_minus))
 
     return scale*( Delta_S*np.cos(Omega*time + phi) + Delta_S_2*np.cos(2*Omega*time + phi_prime) )
+
+## in order to fit second order term I must tweak get_beta function
+
+def get_beta_second(Omega, decay_rate, laser_detun, norm_mod_amp_second):
+    # function calculates the corresponding beta for given known parameters
+    # input: drive frequency, decay_rate, laser detuning, normalized modulation amplitude given by ph_corr_signal
+    # output: float value of beta
+
+
+    def root_func(beta, laser_detun, Omega, decay_rate, norm_mod_amp_second):
+        A_minus = get_A(decay_rate, laser_detun - Omega)
+        A_plus = get_A(decay_rate, laser_detun + Omega)
+        A = get_A(decay_rate, laser_detun)
+
+        Delta_S = 2 * j0(beta) * j1(beta) * np.absolute(np.conj(A) * A_plus - A * np.conj(A_minus))
+        # S_0 = j0(beta) ** 2 * np.absolute(A) ** 2 + j1(beta) ** 2 * (np.absolute(A_plus) ** 2 + np.absolute(A_minus) ** 2)
+        Delta_S_2 = 2 * j1(beta) ** 2 * np.absolute(A_plus * np.conj(A_minus))
+        return Delta_S_2/Delta_S - norm_mod_amp_second
+
+    sol = fsolve(root_func, np.array([0]), args=(laser_detun, Omega, decay_rate, norm_mod_amp_second))
+    return float(sol)
