@@ -9,7 +9,7 @@ from scipy.optimize import least_squares
 from photon_correlation_functions import get_beta, fl_signal_second_order
 ## data import
 data_fluorescence = loadmat('micromotion_60_900_900_200.mat')['namerene_hodnoty']
-data_fluorescence = data_fluorescence[:,0:2]
+#data_fluorescence = data_fluorescence[:,0:5]
 len_data = len(data_fluorescence) # number of fluorescence data in each measurement of micromotion
 N_of_data_sets = data_fluorescence.shape[1] # number of measurements of micromotion
 ## measurement parameters
@@ -59,7 +59,7 @@ norm_mod_amp = np.zeros(N_of_data_sets)
 for k in range(N_of_data_sets):
     # fit = least_squares(fit_resid, [320000, 80000, 0], args=(
     # Omega, cumulative_fluorescence[:,k], time_step), bounds=([0, 0, 0], [np.inf, np.inf, 2*np.pi]) )  # fit.x[0] = S_0, fit.x[1] = Delta S, fit.x[2] = phi
-    fit = least_squares(fit_resid, [300000, 30000, 0, 10000, 0], args=(Omega, cumulative_fluorescence[:, k], time_step) )  # fit.x[0] = S_0, fit.x[1] = Delta S, fit.x[2] = phi
+    fit = least_squares(fit_resid, [300000, 30000, 0, 0, 0], args=(Omega, cumulative_fluorescence[:, k], time_step) )  # fit.x[0] = S_0, fit.x[1] = Delta S, fit.x[2] = phi
     print(fit)
     norm_mod_amp[k] = np.abs(fit.x[1] / fit.x[0]) # Delta S/S_0
 
