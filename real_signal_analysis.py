@@ -7,6 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import least_squares
 from photon_correlation_functions import get_beta
+from matplotlib import rc
 ## data import
 data_fluorescence = loadmat('micromotion_99_X_Y_110_bfiel2.mat')['namerene_hodnoty']
 len_data = len(data_fluorescence) # number of fluorescence data in each measurement of micromotion
@@ -86,15 +87,50 @@ for k in range(N_of_data_sets):
 
 E_rf = m*Omega**2 / (k_vec*e) * beta
 
-# ---- final plot
+## ---- final plot
 matlab_plot_axes = loadmat('x_axis.mat')
 delta_U = matlab_plot_axes['x']
+U1 = loadmat('voltages.mat')['U1']
+U2 = loadmat('voltages.mat')['U2']
+# plt.plot(delta_U, E_rf, '.',delta_U, matlab_plot_axes['y'],'.')
+# plt.show()
+plt.figure(1)
+plt.plot(delta_U, E_rf, '.')
 
-plt.plot(delta_U, E_rf, '.',delta_U, matlab_plot_axes['y'],'.')
-plt.show()
-# plt.figure(1)
-# plt.plot(delta_U, E_rf, '.')
-#
 # plt.figure(2)
 # plt.plot(delta_U, matlab_plot_axes['y'], '.')
 # plt.show()
+
+#----- Erf vs z position
+alpha = (U1 - U2) / (U1+U2)
+a=0.000357087
+b=6.14272e-05
+c=0.000214573
+z_pos = (a*alpha + b*alpha**3 + c*alpha**5)*1e6
+
+# final plot
+#Direct input
+plt.rcParams['text.latex.preamble']=[r"\usepackage{lmodern}"]
+#Options
+params = {'text.usetex' : True,
+          'font.size' : 30,
+          'font.family' : 'lmodern',
+          'text.latex.unicode': True,
+          }
+plt.rcParams.update(params)
+
+plt.figure()
+plt.rcParams["figure.figsize"] = (25,15)
+plt.title(r'micromotion in axial axis with ASYMETRIC driving')
+plt.plot(z_pos, beta, '.')
+plt.xlabel(r'$z_{\rm{pos}} [\rm{\mu m}]$')
+plt.ylabel(r'$ \beta $ [-]')
+plt.savefig('beta_vs_z.png', format='png', dpi=150)
+
+plt.figure()
+plt.rcParams["figure.figsize"] = (25,15)
+plt.title(r'micromotion in axial axis with ASYMETRIC driving')
+plt.plot(z_pos, E_rf, '.')
+plt.xlabel(r'$z_{\rm{pos}} [\rm{\mu m}]$')
+plt.ylabel(r'$ E_{\rm{rf}} $ \rm{[V/m]}')
+plt.savefig('Erf_vs_z.png', format='png', dpi=150)
