@@ -1,4 +1,4 @@
-# 26.9.2019
+# 30.9.2019
 # calculation of the modulation index beta for a real measured data
 
 # from mat4py import loadmat
@@ -7,16 +7,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import least_squares
 from photon_correlation_functions import get_beta
-from matplotlib import rc
+# from matplotlib import rc
 ## data import
-data_fluorescence = loadmat('micromotion_99_X_Y_110_bfiel2.mat')['namerene_hodnoty']
+data_fluorescence = loadmat('micromotion_sym_20190228.mat')['namerene_hodnoty']
 len_data = len(data_fluorescence) # number of fluorescence data in each measurement of micromotion
 N_of_data_sets = data_fluorescence.shape[1] # number of measurements of micromotion
 ## measurement parameters
-Omega = 2 * np.pi * 30.151e6  # RF drive freq
+Omega = 2 * np.pi * 30.171e6  # RF drive freq
 decay_rate = 132e6  # units 2*pi * decay freq
 # laser_detun = -1 / 2 * decay_rate  # laser detuning
-laser_detun = -2*np.pi*14e6  # laser detuning
+laser_detun = -2*np.pi*40e6  # laser detuning
 
 ## calculating photon correlation histogram for given data
 T = 2 * np.pi / Omega  # period of the RF drive
@@ -34,16 +34,6 @@ for k in range(N_of_data_sets):
         for j in range(N_steps_per_rf_period):
             cumulative_fluorescence[j, k] += data_fluorescence[j + i * N_steps_per_rf_period, k]
 
-# plt.figure(1)
-# plt.plot(data_fluorescence,'.')
-# plt.show()
-# plt.figure(2)
-# plt.plot(cumulative_fluorescence, '.')
-# plt.show()
-# #
-# plt.figure()
-# plt.plot(data_fluorescence[:, 1], '.')
-# plt.show()
 
 
 ## fit of the histogram
@@ -69,16 +59,10 @@ for k in range(N_of_data_sets):
     # plt.plot(cumulative_fluorescence[:,k], '.')
     # plt.show()
 
-# -----------plot of the fit
-# S_fit = fit.x[0] + fit.x[1] * np.cos(Omega * time_step * np.arange(0, len(cumulative_fluorescence[:,1])) - fit.x[2])
-# plt.plot(S_fit)
-# plt.plot(cumulative_fluorescence[:,1], '.')
-# plt.show()
-# ------------
 
 ## calculating beta
 m = 40 * 1.66053904e-27 # calcium mass
-k_vec = 2*np.pi / 397e-9 # wave vector
+k_vec = 2*np.pi / 397.371e-9 # wave vector
 e = 1.60217662e-19 # elem charge
 
 beta = np.zeros(N_of_data_sets)
@@ -88,18 +72,16 @@ for k in range(N_of_data_sets):
 E_rf = m*Omega**2 / (k_vec*e) * beta
 
 ## ---- final plot
-matlab_plot_axes = loadmat('x_axis.mat')
-delta_U = matlab_plot_axes['x']
-U1 = loadmat('voltages.mat')['U1']
-U2 = loadmat('voltages.mat')['U2']
-# plt.plot(delta_U, E_rf, '.',delta_U, matlab_plot_axes['y'],'.')
-# plt.show()
-plt.figure(1)
-plt.plot(delta_U, E_rf, '.')
 
-# plt.figure(2)
-# plt.plot(delta_U, matlab_plot_axes['y'], '.')
-# plt.show()
+U_1 = loadmat('voltages_28022019.mat')['U1']
+U_2 = loadmat('voltages_28022019.mat')['U2']
+
+U1 = np.zeros(len(U_1))
+U2 = np.zeros(len(U_2))
+# I must change data type of U1 and U2 to float
+for k in range(len(U_1)):
+    U1[k] = float(U_1[k,0])
+    U2[k] = float(U_2[k, 0])
 
 #----- Erf vs z position
 alpha = (U1 - U2) / (U1+U2)
@@ -121,16 +103,16 @@ plt.rcParams.update(params)
 
 plt.figure()
 plt.rcParams["figure.figsize"] = (25,15)
-plt.title(r'micromotion in axial axis with ASYMETRIC driving')
+plt.title(r'micromotion in axial axis with SYMETRIC driving')
 plt.plot(z_pos, beta, '.', markersize=10)
 plt.xlabel(r'$z_{\rm{pos}} [\rm{\mu m}]$')
 plt.ylabel(r'$ \beta_z $ [-]')
-plt.savefig('beta_vs_z.png', format='png', dpi=150)
+plt.savefig('beta_vs_z_28022019.png', format='png', dpi=150)
 
 plt.figure()
 plt.rcParams["figure.figsize"] = (25,15)
-plt.title(r'micromotion in axial axis with ASYMETRIC driving')
+plt.title(r'micromotion in axial axis with SYMETRIC driving')
 plt.plot(z_pos, E_rf, '.', markersize=10)
 plt.xlabel(r'$z_{\rm{pos}} [\rm{\mu m}]$')
 plt.ylabel(r'$ E^{\rm{rf}}_z $ \rm{[V/m]}')
-plt.savefig('Erf_vs_z.png', format='png', dpi=150)
+plt.savefig('Erf_vs_z_28022019.png', format='png', dpi=150)
