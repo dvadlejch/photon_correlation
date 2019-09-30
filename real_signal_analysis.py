@@ -129,7 +129,7 @@ plt.savefig('beta_vs_z.png', format='png', dpi=150)
 
 plt.figure()
 plt.rcParams["figure.figsize"] = (25,15)
-plt.title(r'micromotion in axial axis with ASYMETRIC driving')
+plt.title(r'ASYMETRIC drive')
 plt.plot(z_pos, E_rf, '.', markersize=10)
 plt.xlabel(r'$z_{\rm{pos}} [\rm{\mu m}]$')
 plt.ylabel(r'$ E^{\rm{rf}}_z $ \rm{[V/m]}')
